@@ -60,7 +60,7 @@ public class Hello {
 	public static void db() {
 		System.out.println("printin");
 		PoolProperties p = new PoolProperties();
-		p.setUrl("jdbc:mysql://titan.csse.rose-hulman.edu/iTrade42");
+		p.setUrl("jdbc:sqlserver://titan.csse.rose-hulman.edu;databasename=itrade42");
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		} catch (ClassNotFoundException e1) {
@@ -68,8 +68,8 @@ public class Hello {
 			e1.printStackTrace();
 		}
 		p.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		p.setUsername("username");
-		p.setPassword("password");
+		p.setUsername("raspst");
+		p.setPassword("****************");
 		p.setJmxEnabled(true);
 		p.setTestWhileIdle(false);
 		p.setTestOnBorrow(true);
@@ -94,11 +94,11 @@ public class Hello {
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from user");
+			ResultSet rs = st.executeQuery("SELECT * FROM [User]");
 			int cnt = 1;
 			while (rs.next()) {
-				System.out.println((cnt++) + ". Host:" + rs.getString("Host")
-						+ " User:" + rs.getString("User") + " Password:"
+				System.out.println((cnt++) 
+						+ " User:" + rs.getString("Username") + " Password:"
 						+ rs.getString("Password"));
 			}
 			rs.close();
