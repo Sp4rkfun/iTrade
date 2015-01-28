@@ -12,7 +12,6 @@ public class Database {
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		p.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
