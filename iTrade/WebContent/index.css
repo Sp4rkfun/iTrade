@@ -33,6 +33,10 @@ input{
 	display: flex;
 		flex-grow:10;
 }
+.action{
+	display: flex;
+		flex-grow:10;
+}
 .bname{
 	display: flex;
 		flex-grow:20;
@@ -46,6 +50,22 @@ input{
 		flex-grow:10;
 }
 #bselecter{
+	width: 100px;
+	display: inline-block;
+}
+#btyper{
+	width: 100px;
+	display: inline-block;
+}
+#shares{
+	width: 100px;
+	display: inline-block;
+}
+#suboffer{
+	width: 100px;
+	display: inline-block;
+}
+#subshares{
 	width: 100px;
 	display: inline-block;
 }

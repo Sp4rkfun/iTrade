@@ -63,15 +63,24 @@ public class Policy {
 	@Path("/all/{broker}")
 	public String allByBroker(@PathParam("broker")String broker){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div></div><br/>";
+		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM [Policy], [Has_policy] WHERE Broker_id = "+broker+" AND Has_policy.Rule_id = Policy.Rule_id");
 			int cnt = 1;
 			while (rs.next()) {
+				String s="<div class=\"action\">";
+				Statement sta = con.createStatement();
+				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				while(rss.next()){
+					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
+				}
+				s+="</div>";
+				rss.close();
+				sta.close();
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Type")+"</div><div class=\"blimit\">"+rs.getString("Frequency")+"</div><div class=\"btime\">"+rs.getString("Condition")+"</div>"
-						+ "<div class=\"binput\"><input type=\"submit\" value=\"Remove\" onClick=\"removeFromBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
+						+ s+"<div class=\"binput\"><input type=\"submit\" value=\"Remove\" onClick=\"removeFromBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 			}
 			rs.close();
 			st.close();
@@ -79,8 +88,17 @@ public class Policy {
 			rs = st.executeQuery("SELECT * FROM [Policy] WHERE Rule_id NOT IN(SELECT Policy.Rule_id FROM [Policy], [Has_policy] WHERE Broker_id = "+broker+" AND Has_policy.Rule_id = Policy.Rule_id)");
 			cnt = 1;
 			while (rs.next()) {
+				String s="<div class=\"action\">";
+				Statement sta = con.createStatement();
+				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				while(rss.next()){
+					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
+				}
+				s+="</div>";
+				rss.close();
+				sta.close();
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Type")+"</div><div class=\"blimit\">"+rs.getString("Frequency")+"</div><div class=\"btime\">"+rs.getString("Condition")+"</div>"
-						+ "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
+						+ s+"<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 			}
 			rs.close();
 			st.close();
@@ -95,6 +113,45 @@ public class Policy {
 		}
 		return result;
 	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	@Path("/all/exclusive/{broker}")
+	public String allOnlyByBroker(@PathParam("broker")String broker){
+		Connection con = null;
+		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
+		try {
+			con = Database.initialize().getConnection();
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM [Policy], [Has_policy] WHERE Broker_id = "+broker+" AND Has_policy.Rule_id = Policy.Rule_id");
+			int cnt = 1;
+			while (rs.next()) {
+				String s="<div class=\"action\">";
+				Statement sta = con.createStatement();
+				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				while(rss.next()){
+					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
+				}
+				s+="</div>";
+				rss.close();
+				sta.close();
+				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Type")+"</div><div class=\"blimit\">"+rs.getString("Frequency")+"</div><div class=\"btime\">"+rs.getString("Condition")+"</div>"
+						+ s+"<div class=\"binput\"><input type=\"submit\" value=\"Remove\" onClick=\"removeFromBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
+			}
+			rs.close();
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null)
+				try {
+					con.close();
+				} catch (Exception ignore) {
+				}
+		}
+		return result;
+	}
+	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("{broker}/{policy}")

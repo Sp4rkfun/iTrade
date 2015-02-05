@@ -58,8 +58,10 @@ public class Fund {
 			ResultSet rs = st.executeQuery("SELECT * FROM [Fund] WHERE Ticker = '"+name+"'");
 			int cnt = 1;
 			while (rs.next()) {
-				result=rs.getString("Share_Price")+
-						"<div><label for=\"bselect\">Select Broker:</label><div class=\"binput\" id=\"bselecter\"><select id=\"bselect\"></select></div></div>";
+				result="<div id=\"sprice\">"+rs.getString("Share_Price")+"</div>"+
+						"<div><label for=\"bselect\">Select Broker:</label><div class=\"binput\" id=\"bselecter\"><select id=\"bselect\"></select></div></div>"+
+						"<div><label for=\"btype\">Select Type:</label><div class=\"binput\" id=\"btyper\"><select id=\"btype\">"
+						+ "<option>Buy</option></select></div></div><input id=\"shares\" type=\"text\"></br><input id=\"subshares\" type=\"submit\" onClick=\"submitOffer();\">";
 				
 				//result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Ticker")+
 				//		"</div><div class=\"blimit\">"+rs.getString("Share_Price")+
