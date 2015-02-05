@@ -45,6 +45,10 @@ input{
 	display: flex;
 		flex-grow:10;
 }
+#bselecter{
+	width: 100px;
+	display: inline-block;
+}
 .binput{
 	display: flex;
 		flex-grow:10;

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,7 +22,13 @@ public class Policy {
 			@PathParam("condition") String condition){
 		return ""+db(type,frequency,condition);
 	}
-	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	@Path("{type}/{frequency}/{condition}/{broker}")
+	public String registerToBroker(@PathParam("type") String type,@PathParam("frequency") String frequency,
+			@PathParam("condition") String condition,@PathParam("broker") String broker){
+		return addPolicyToBroker(broker,""+db(type,frequency,condition) );
+	}
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/all")
@@ -139,15 +146,18 @@ public class Policy {
 
 
 		Connection con = null;
+		int id = 0;
 		try {
 			con = Database.initialize().getConnection();
-			CallableStatement proc = con.prepareCall("{call create_policy (?,?,?)}");
+			CallableStatement proc = con.prepareCall("{call create_policy (?,?,?,?)}");
 			proc.setString(1, name);
 			proc.setString(2, limit);
 			proc.setString(3, tradeTime);
+			proc.registerOutParameter(4, Types.INTEGER);
 			proc.executeUpdate();
+			id=proc.getInt(4);
 			proc.close();
-			return 0;
+			return id;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -157,7 +167,7 @@ public class Policy {
 				} catch (Exception ignore) {
 				}
 		}
-		return 0;
+		return id;
 	}
 	
 }

@@ -1,10 +1,16 @@
 var brokerId=0;
+var brokerName="";
 function brokers() {
+	document.getElementById("broker").innerHTML="";
 var status = document.getElementById("brokers");
 // Returns successful data submission message when the entered information is stored in database.
 var valid=true;
 status.innerHTML="";
 if(valid.valueOf()==true){
+	$("#label1").text("Broker Name");
+	$("#label2").text("Trade Limit");
+	$("#label3").text("Trade Time");
+	brokerId=0;
 	//document.getElementById("status").setAttribute("style", "background-color:red");
 	var query="../rest/broker/all";
 	$.ajax({
@@ -19,8 +25,14 @@ if(valid.valueOf()==true){
 }
 return false;
 }
-function policies(id) {
+function policies(id, name) {
 	brokerId=id;
+	brokerName=name;
+	$("#label1").text("Type");
+	$("#label2").text("Frequency");
+	$("#label3").text("Condition");
+	document.getElementById("broker").innerHTML="<div>"+brokerName+
+	"<input type=\"submit\" style=\"width:100px; margin-left:10px\"value=\"Back\" onClick=\"brokers();\"></div>";
 	var status = document.getElementById("brokers");
 	// Returns successful data submission message when the entered information is stored in database.
 	var valid=true;
@@ -85,6 +97,7 @@ function createBroker() {
 	var name = document.getElementById("name").value;
 	var limit = document.getElementById("limit").value;
 	var time = document.getElementById("time").value;
+	var status = document.getElementById("brokers");
 	// Returns successful data submission message when the entered information is stored in database.
 	var valid=true;
 	if(name==''){
@@ -102,7 +115,7 @@ function createBroker() {
 		if(brokerId==0)
 		var query="../rest/broker/"+name+"/"+limit+"/"+time;
 		else{
-			query="../rest/policy/"+name+"/"+limit+"/"+time;
+			query="../rest/policy/"+name+"/"+limit+"/"+time+"/"+brokerId;
 		}
 		$.ajax({
 			type: "GET",
@@ -113,7 +126,8 @@ function createBroker() {
 				if(brokerId==0)
 				brokers();
 				else
-					policies(brokerId);
+					status.innerHTML=html;
+					//policies(brokerId);
 			}
 			});
 	}

@@ -38,7 +38,7 @@ public class Broker {
 			int cnt = 1;
 			while (rs.next()) {
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+"</div><div class=\"blimit\">"+rs.getInt("Limit")+"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
-						+ "<div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+");\"></div></div><br/>";
+						+ "<div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"');\"></div></div><br/>";
 			}
 			rs.close();
 			st.close();
