@@ -35,10 +35,7 @@ function brokers() {
 		cache: false,
 		success: function(html) {
 		status.innerHTML=html;
-		}
-		});
-		//document.getElementById("status").setAttribute("style", "background-color:red");
-		var query="rest/broker/all";
+		query="rest/broker/all";
 		$.ajax({
 			type: "GET",
 			url: query,
@@ -48,6 +45,9 @@ function brokers() {
 			status.innerHTML+=html;
 			}
 			});
+		}
+		});
+		//document.getElementById("status").setAttribute("style", "background-color:red");
 	return false;
 	}
 

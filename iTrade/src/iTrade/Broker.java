@@ -164,7 +164,7 @@ public class Broker {
 			st.executeUpdate("INSERT INTO [Has_fund_user] VALUES ('"+req.getSession().getAttribute("user")+"', 'BRKR"+id+"', "+amount+")");
 			st.close();
 			st = con.createStatement();
-			st.executeUpdate("INSERT INTO [Uses_broker] VALUES ('"+req.getSession().getAttribute("user")+"', "+id+")");
+			st.executeUpdate("INSERT INTO [Uses_broker] VALUES ('"+req.getSession().getAttribute("user")+"', "+id+","+amount+")");
 			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
