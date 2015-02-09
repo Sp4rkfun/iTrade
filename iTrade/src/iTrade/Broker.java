@@ -161,8 +161,8 @@ public class Broker {
 			st.executeUpdate("UPDATE [User] SET Capital = Capital - "+amount+" WHERE Username = '"+req.getSession().getAttribute("user")+"'");
 			st.close();
 			st = con.createStatement();
-			st.executeUpdate("INSERT INTO [Has_fund_user] VALUES ('"+req.getSession().getAttribute("user")+"', 'BRKR"+id+"', "+amount+")");
-			st.close();
+			//st.executeUpdate("INSERT INTO [Has_fund_user] VALUES ('"+req.getSession().getAttribute("user")+"', 'BRKR"+id+"', "+amount+")");
+			//st.close();
 			st = con.createStatement();
 			st.executeUpdate("INSERT INTO [Uses_broker] VALUES ('"+req.getSession().getAttribute("user")+"', "+id+","+amount+")");
 			st.close();
