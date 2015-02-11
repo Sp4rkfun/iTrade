@@ -19,20 +19,26 @@ if(time==''||time<10){
 if(valid.valueOf()==true){
 	//document.getElementById("status").setAttribute("style", "background-color:red");
 	var query="rest/broker/"+name+"/"+limit+"/"+time;
-	$.ajax({
-		type: "GET",
-		url: query,
-		data: "",
-		cache: false,
-		success: function(html) {
+	ajax(query,function(html) {
 		if(html==1){
 			status.innerHTML="Username taken!<br\>"
 		}
 		else{
 			
 		}
-		}
 		});
 }
 return false;
+}
+
+function ajax(query, callback) {
+	$.ajax({
+		type : "GET",
+		url : query,
+		data : "",
+		cache : false,
+		success : function(html) {
+			callback(html);
+		}
+	});
 }
