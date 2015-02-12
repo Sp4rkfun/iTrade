@@ -39,8 +39,8 @@ public class Policy {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Policy]");
+			CallableStatement st = con.prepareCall("{call display_policies()}");
+			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Type")+"</div><div class=\"blimit\">"+rs.getString("Frequency")+"</div><div class=\"btime\">"+rs.getString("Condition")+"</div>"
@@ -68,13 +68,15 @@ public class Policy {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Policy], [Has_policy] WHERE Broker_id = "+broker+" AND Has_policy.Rule_id = Policy.Rule_id");
+			CallableStatement st = con.prepareCall("{call get_broker_policies(?)}");
+			st.setInt(1, Integer.parseInt(broker));
+			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				String s="<div class=\"action\">";
-				Statement sta = con.createStatement();
-				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				CallableStatement sta = con.prepareCall("{call show_policy_actions(?)}");
+				sta.setString(1, (String) rs.getString("Rule_id"));
+				ResultSet rss = sta.executeQuery();
 				while(rss.next()){
 					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
 				}
@@ -86,13 +88,15 @@ public class Policy {
 			}
 			rs.close();
 			st.close();
-			st = con.createStatement();
-			rs = st.executeQuery("SELECT * FROM [Policy] WHERE Rule_id NOT IN(SELECT Policy.Rule_id FROM [Policy], [Has_policy] WHERE Broker_id = "+broker+" AND Has_policy.Rule_id = Policy.Rule_id)");
+			st = con.prepareCall("{call unassigned_policies(?)}");
+			st.setInt(1, Integer.parseInt(broker));
+			rs = st.executeQuery();
 			cnt = 1;
 			while (rs.next()) {
 				String s="<div class=\"action\">";
-				Statement sta = con.createStatement();
-				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				CallableStatement sta = con.prepareCall("{call unassigned_policy_actions(?)}");
+				sta.setString(1, rs.getString("Rule_id"));
+				ResultSet rss = sta.executeQuery();
 				while(rss.next()){
 					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
 				}
@@ -124,13 +128,15 @@ public class Policy {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Policy], [Has_policy] WHERE Broker_id = "+broker+" AND Has_policy.Rule_id = Policy.Rule_id");
+			CallableStatement st = con.prepareCall("{call get_broker_policies(?)}");
+			st.setInt(1, Integer.parseInt(broker));
+			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				String s="<div class=\"action\">";
-				Statement sta = con.createStatement();
-				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				CallableStatement sta = con.prepareCall("{call show_policy_actions(?)}");
+				sta.setString(1, (String) rs.getString("Rule_id"));
+				ResultSet rss = sta.executeQuery();
 				while(rss.next()){
 					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
 				}
