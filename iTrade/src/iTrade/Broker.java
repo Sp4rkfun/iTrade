@@ -117,13 +117,15 @@ public class Broker {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Broker]");
+			CallableStatement st = con.prepareCall("{call display_brokers()}");
+			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				String s="<div>";
-				Statement sta = con.createStatement();
-				ResultSet rss = sta.executeQuery("SELECT * FROM [Action], [Has_action] WHERE id = Action_id AND Policy_id = "+rs.getString("Rule_id"));
+				CallableStatement sta = con.prepareCall("{call display_actions(?,?)}");
+				sta.setInt(1, id);
+				sta.setInt(2, Integer.parseInt(rs.getString("Rule_id")));
+				ResultSet rss = sta.executeQuery();
 				while(rss.next()){
 					s+=rss.getString("Type")+" "+rss.getString("Effect")+"<br>";
 				}
@@ -151,19 +153,23 @@ public class Broker {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("add/{id}/{amt}")
-	public String addBroker(@Context HttpServletRequest req, @PathParam("id") int id, @PathParam("amt") String amount){
+	public String addBroker(@Context HttpServletRequest req, @PathParam("id") int id, @PathParam("amt") Float amount){
 		Connection con = null;
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			st.executeUpdate("UPDATE [User] SET Capital = Capital - "+amount+" WHERE Username = '"+req.getSession().getAttribute("user")+"'");
-			st.close();
-			st = con.createStatement();
+			//Statement st = con.createStatement();
+			CallableStatement st = con.prepareCall("{call update_user_capital(?,?)}");
+			st.setString(1, (String) req.getSession().getAttribute("user")); 
+			st.setFloat(2, amount);
+			st.executeQuery();
 			//st.executeUpdate("INSERT INTO [Has_fund_user] VALUES ('"+req.getSession().getAttribute("user")+"', 'BRKR"+id+"', "+amount+")");
-			//st.close();
-			st = con.createStatement();
-			st.executeUpdate("INSERT INTO [Uses_broker] VALUES ('"+req.getSession().getAttribute("user")+"', "+id+","+amount+")");
+			st.close();
+			st = con.prepareCall("{call add_broker_user(?,?,?)}");
+			st.setString(1, (String) req.getSession().getAttribute("user"));
+			st.setInt(2, id);
+			st.setFloat(3, amount);
+			st.executeQuery();
 			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
