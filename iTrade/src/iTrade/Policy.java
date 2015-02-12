@@ -172,8 +172,10 @@ public class Policy {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			st.executeUpdate("INSERT INTO [Has_policy] VALUES ("+broker+","+policy+")");
+			CallableStatement st = con.prepareCall("{call broker_policy(?,?)}");
+			st.setInt(1, Integer.parseInt(broker));
+			st.setInt(2, Integer.parseInt(policy));
+			st.executeQuery();
 			//rs.close();
 			st.close();
 		} catch (SQLException e) {
@@ -195,8 +197,10 @@ public class Policy {
 		Connection con = null;
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			st.executeUpdate("DELETE FROM [Has_policy] WHERE Broker_id ="+broker+" AND Rule_id = "+policy);
+			CallableStatement st = con.prepareCall("{call remove_broker_policy(?,?)}");
+			st.setInt(1, Integer.parseInt(broker));
+			st.setInt(2, Integer.parseInt(policy));
+			st.executeUpdate();
 			//rs.close();
 			st.close();
 		} catch (SQLException e) {
