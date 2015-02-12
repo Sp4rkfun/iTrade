@@ -60,8 +60,9 @@ public class Broker {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Broker], [Uses_broker] WHERE Broker.Broker_id = Uses_broker.Broker_id AND Uses_broker.Username = '"+req.getSession().getAttribute("user")+"'");
+			CallableStatement st = con.prepareCall("{call User_Brokers_view(?)}");
+			st.setString(1, (String) req.getSession().getAttribute("user"));
+			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+"</div><div class=\"blimit\">"+rs.getInt("Limit")+"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
@@ -159,13 +160,13 @@ public class Broker {
 		try {
 			con = Database.initialize().getConnection();
 			//Statement st = con.createStatement();
-			CallableStatement st = con.prepareCall("{call update_user_capital(?,?)}");
-			st.setString(1, (String) req.getSession().getAttribute("user")); 
-			st.setFloat(2, amount);
-			st.executeQuery();
-			//st.executeUpdate("INSERT INTO [Has_fund_user] VALUES ('"+req.getSession().getAttribute("user")+"', 'BRKR"+id+"', "+amount+")");
-			st.close();
-			st = con.prepareCall("{call add_broker_user(?,?,?)}");
+//			CallableStatement st = con.prepareCall("{call update_user_capital(?,?)}");
+//			st.setString(1, (String) req.getSession().getAttribute("user")); 
+//			st.setFloat(2, amount);
+//			st.executeQuery();
+//			st.executeUpdate("INSERT INTO [Has_fund_user] VALUES ('"+req.getSession().getAttribute("user")+"', 'BRKR"+id+"', "+amount+")");
+//			st.close();
+			CallableStatement st = con.prepareCall("{call add_broker_user(?,?,?)}");
 			st.setString(1, (String) req.getSession().getAttribute("user"));
 			st.setInt(2, id);
 			st.setFloat(3, amount);
