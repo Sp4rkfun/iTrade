@@ -14,9 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.apache.tomcat.jdbc.pool.PoolProperties;
-
 @Path("/broker")
 public class Broker {
 	@GET
@@ -91,14 +88,16 @@ public class Broker {
 		String result="";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Broker], [Uses_broker] WHERE Broker.Broker_id = Uses_broker.Broker_id AND Uses_broker.Username = '"+req.getSession().getAttribute("user")+"'");
+			CallableStatement proc = con.prepareCall("{call User_Brokers_view(?)}");
+			proc.setString(1,(String) req.getSession().getAttribute("user"));
+			proc.executeQuery();
+			ResultSet rs = proc.getResultSet();
 			int cnt = 1;
 			while (rs.next()) {
 				result+="<option value=\""+rs.getInt("Broker_id")+"\">"+rs.getString("Name")+"</option>";
 			}
 			rs.close();
-			st.close();
+			proc.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

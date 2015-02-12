@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Path("/policy")
@@ -117,7 +119,7 @@ public class Policy {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/all/exclusive/{broker}")
-	public String allOnlyByBroker(@PathParam("broker")String broker){
+	public String allOnlyByBroker(@Context HttpServletRequest req, @PathParam("broker")String broker){
 		Connection con = null;
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
 		try {
@@ -135,8 +137,12 @@ public class Policy {
 				s+="</div>";
 				rss.close();
 				sta.close();
+				String state="";
+				if(req.getSession().getAttribute("user").equals("admin")){
+					state="<div class=\"binput\"><input type=\"submit\" value=\"Remove\" onClick=\"removeFromBroker("+rs.getString("Rule_id")+")\"></div>";
+				}
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Type")+"</div><div class=\"blimit\">"+rs.getString("Frequency")+"</div><div class=\"btime\">"+rs.getString("Condition")+"</div>"
-						+ s+"<div class=\"binput\"><input type=\"submit\" value=\"Remove\" onClick=\"removeFromBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
+						+ s+state+"</div><br/>";
 			}
 			rs.close();
 			st.close();

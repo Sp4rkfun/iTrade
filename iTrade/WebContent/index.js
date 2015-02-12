@@ -18,7 +18,7 @@ function brokers() {
 	ajax(query, function(html) {
 		status.innerHTML = html;
 		query = "rest/broker/all";
-		ajax(status, function(html) {
+		ajax(query, function(html) {
 			status.innerHTML += html;
 		});
 	});
@@ -87,6 +87,20 @@ function addBroker() {
 	});
 }
 
+
+
+function adjustEstimate(){
+	
+}
+
+function userData(){
+	var status = document.getElementById("brokers");
+	status.innerHTML = "";
+	var query = "rest/fund/user";
+	ajax(query, function(html) {
+		status.innerHTML = html;
+	});
+}
 function ajax(query, callback) {
 	$.ajax({
 		type : "GET",

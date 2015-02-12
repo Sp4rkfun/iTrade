@@ -36,25 +36,19 @@ public abstract class Action {
 						+ rs.getString("Type") + " "
 						+ rs.getString("Frequency") + " "
 						+ rs.getString("Condition"));
-				switch (rs.getString("Type")) {
+				switch (rs.getString("Frequency").trim()) {
 				case "daily":
 					synchronized (daily) {
-						daily.add(Policy.CreatePolicy(rs.getString("Type")));
+						daily.add(Policy.CreatePolicy(rs.getString("Type"),rs.getString("Frequency"),rs.getString("Condition")));
 					}
 					break;
 				case "weekly":
 					synchronized (weekly) {
-						for(Policy p:weekly){
-							p.runPolicy();
-						}
+						weekly.add(Policy.CreatePolicy(rs.getString("Type"),rs.getString("Frequency"),rs.getString("Condition")));
 					}
 					break;
 				case "monthly":
-					synchronized (monthly) {
-						for(Policy p:monthly){
-							p.runPolicy();
-						}
-					}
+					monthly.add(Policy.CreatePolicy(rs.getString("Type"),rs.getString("Frequency"),rs.getString("Condition")));
 					break;
 				default:
 					break;

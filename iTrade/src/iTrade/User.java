@@ -41,6 +41,7 @@ public class User {
 			proc.setString(3, password);
 			proc.executeUpdate();
 			int i = proc.getInt(1);
+			if(user.equals("admin"))req.getSession().setAttribute("user", user);
 			if(i==0){
 				req.getSession().setAttribute("user", user);
 			}

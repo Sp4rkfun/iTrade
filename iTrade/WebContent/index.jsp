@@ -25,6 +25,7 @@ else{%>
 <a href="register.html">Sign up!</a><br>
 <div style="display: inline-block;" onclick="myFunction();">Funds</div>
 <div style="display: inline-block;" onclick="brokers();">Brokers</div>
+<div style="display: inline-block;" onclick="userData();">Statistics</div>
 <div id="brokers"></div>
 </body>
 
