@@ -170,7 +170,7 @@ public class Broker {
 			st.setString(1, (String) req.getSession().getAttribute("user"));
 			st.setInt(2, id);
 			st.setFloat(3, amount);
-			st.executeQuery();
+			st.executeUpdate();
 			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -2,6 +2,7 @@ package iTrade;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -27,20 +28,64 @@ public class Offer {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Ticker</div><div class=\"blimit\" flex=\"10\">Share Price</div><div class=\"btime\" flex=\"10\">Industry</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			CallableStatement proc = con.prepareCall("{call make_offer(?,?,?,?,?,?)}");
-			//proc.setString(1,(String) req.getSession().getAttribute("user"));
+			CallableStatement proc = con.prepareCall("{call make_offer(?,?,?,?,?,?,?)}");
 			proc.setString(1, price);
 			proc.setString(2, type);
 			proc.setInt(3, quantity);
 			proc.setInt(4, broker);
 			proc.setString(5, fund);
-			proc.registerOutParameter(6, Types.INTEGER);
-			
+			proc.setString(6,(String) req.getSession().getAttribute("user"));
+			proc.registerOutParameter(7, Types.INTEGER);			
 			proc.executeUpdate();
-			result=""+proc.getInt(6);
-			System.out.println(result);
-			//rs.close();
+			int val = proc.getInt(7);
 			proc.close();
+			if(val!=-1){
+				if(type=="buy"){
+					proc = con.prepareCall("{call match_buy_offer(?,?,?)}");
+					proc.setString(1, price);
+					proc.setInt(2, quantity);
+					proc.setString(3, fund);
+					proc.executeQuery();
+					ResultSet rs = proc.getResultSet();
+					int seller=-1;
+					while(rs.next()){
+						seller = rs.getInt("Offer_id");
+						break;
+					}
+					rs.close();
+					proc.close();
+					if(seller!=-1){
+						proc = con.prepareCall("{call perform_transaction(?,?)}");
+						proc.setInt(1, val);
+						proc.setInt(2, seller);
+						proc.executeUpdate();
+						proc.close();
+					}
+				}
+				else{
+					proc = con.prepareCall("{call match_sell_offer(?,?,?)}");
+					proc.setString(1, price);
+					proc.setInt(2, quantity);
+					proc.setString(3, fund);
+					proc.executeQuery();
+					ResultSet rs = proc.getResultSet();
+					int buyer=-1;
+					while(rs.next()){
+						buyer = rs.getInt("Offer_id");
+						break;
+					}
+					rs.close();
+					proc.close();
+					if(buyer!=-1){
+						proc = con.prepareCall("{call perform_transaction(?,?)}");
+						proc.setInt(1, buyer);
+						proc.setInt(2, val);
+						proc.executeUpdate();
+						proc.close();
+					}
+				}
+			}
+			System.out.println(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

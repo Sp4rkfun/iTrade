@@ -112,6 +112,8 @@ public class Fund {
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+
 						"</div><div class=\"blimit\">"+rs.getString("Investment")+
 						"</div></div><br/>";
+				result+="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Date</div><div class=\"blimit\" flex=\"10\">Total</div>"
+						+ "<div class=\"blimit\" flex=\"10\">Share Price</div><div class=\"blimit\" flex=\"10\">Shares</div></div><br/>";
 				CallableStatement proc1 = con.prepareCall("{call transaction_history(?,?)}");
 				proc1.setString(1,(String) req.getSession().getAttribute("user"));
 				proc1.setString(2, rs.getString("Broker_id"));
@@ -119,8 +121,13 @@ public class Fund {
 				ResultSet rs1 = proc1.getResultSet();
 				int cnt1 = 1;
 				while (rs1.next()) {				
+					int mult = 1;
+					if(rs1.getString("Buyer_user").equals(req.getSession().getAttribute("user")))
+						mult = -1;
 					result+="<div class=\"blist\"><div class=\"bno\">"+(cnt1++)+"</div><div class=\"bname\">"+rs1.getString("Time")+
-							"</div><div class=\"blimit\">"+rs1.getString("Sale_price")+
+							"</div><div class=\"blimit\">"+mult*Float.parseFloat(rs1.getString("Sale_price"))*rs1.getInt("No_of_shares")+
+							"</div><div class=\"blimit\">"+Float.parseFloat(rs1.getString("Sale_price"))+
+							"</div><div class=\"blimit\">"+rs1.getInt("No_of_shares")+
 							"</div></div><br/>";
 							//+ "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 				}
