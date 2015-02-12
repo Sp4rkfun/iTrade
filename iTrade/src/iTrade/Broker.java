@@ -35,8 +35,8 @@ public class Broker {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM [Broker]");
+			CallableStatement st = con.prepareCall("{call display_brokers}");  
+			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+"</div><div class=\"blimit\">"+rs.getInt("Limit")+"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
