@@ -23,11 +23,15 @@ else{%>
 <a href="broker.html">Create A Broker</a>
 <a href="policy.html">Create A Policy</a>
 <a href="register.html">Sign up!</a><br>
-<div style="display: inline-block;" onclick="myFunction();">Funds</div>
-<div style="display: inline-block;" onclick="brokers();">Brokers</div>
-<div style="display: inline-block;" onclick="funds();">Equity</div>
-<div style="display: inline-block;" onclick="userData();">Transactions</div>
-<div style="position: relative; height: 90%;"><div id="brokers"></div></div>
+
+<div style="position: relative; height: 90%; width: 90%; margin: auto;background: green; border-radius:10px;">
+<div style="width: 100%; position: relative; display: inline-block; background: cadetblue;">
+<div class="tabs" onclick="myFunction();">Funds</div>
+<div class="tabs" onclick="brokers();">Brokers</div>
+<div class="tabs" onclick="funds();">Equity</div>
+<div class="tabs" onclick="userData();">Transactions</div>
+</div>
+<div id="brokers"></div></div>
 </body>
 
 </html>

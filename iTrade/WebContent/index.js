@@ -3,7 +3,6 @@ var brokerName = "";
 var selectedFund = "";
 function myFunction() {
 	var status = document.getElementById("brokers");
-	status.innerHTML = "";
 	var query = "rest/fund/all";
 	ajax(query, function(html) {
 		status.innerHTML = html;
@@ -14,7 +13,6 @@ function brokers() {
 	var status = document.getElementById("brokers");
 	var valid = true;
 	var text;
-	status.innerHTML = "";
 	var query = "rest/broker/all/has";
 	ajax(query, function(html) {
 		text = html;
@@ -104,7 +102,6 @@ function userData(){
 }
 function funds(){
 	var status = document.getElementById("brokers");
-	status.innerHTML = "";
 	var query = "rest/fund/user/funds";
 	ajax(query, function(html) {
 		status.innerHTML = html;
