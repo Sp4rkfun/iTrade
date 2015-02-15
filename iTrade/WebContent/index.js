@@ -13,13 +13,14 @@ function myFunction() {
 function brokers() {
 	var status = document.getElementById("brokers");
 	var valid = true;
+	var text;
 	status.innerHTML = "";
 	var query = "rest/broker/all/has";
 	ajax(query, function(html) {
-		status.innerHTML = html;
+		text = html;
 		query = "rest/broker/all";
 		ajax(query, function(html) {
-			status.innerHTML += html;
+			status.innerHTML = text+html;
 		});
 	});
 }
@@ -97,6 +98,14 @@ function userData(){
 	var status = document.getElementById("brokers");
 	status.innerHTML = "";
 	var query = "rest/fund/user";
+	ajax(query, function(html) {
+		status.innerHTML = html;
+	});
+}
+function funds(){
+	var status = document.getElementById("brokers");
+	status.innerHTML = "";
+	var query = "rest/fund/user/funds";
 	ajax(query, function(html) {
 		status.innerHTML = html;
 	});

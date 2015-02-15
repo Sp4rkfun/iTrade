@@ -16,7 +16,7 @@ public class Policy {
 	}
 	public static class Quota extends Policy{
 		String[] condition;
-		String frequency;
+		String frequency="";
 		public Quota(String condition,String frequency) {
 			this.condition = condition.split(" ");
 		}

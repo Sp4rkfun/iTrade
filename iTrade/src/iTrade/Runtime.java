@@ -2,7 +2,10 @@ package iTrade;
 
 import java.util.ArrayList;
 
+import org.joda.time.LocalDate;
+
 import iTrade.action.Action;
+import iTrade.policy.Parser;
 import iTrade.policy.Policy;
 public class Runtime extends Thread{
 	long duration;
@@ -13,9 +16,11 @@ public class Runtime extends Thread{
 	public static ArrayList<Policy> daily = new ArrayList<Policy>();
 	public static ArrayList<Policy> weekly = new ArrayList<Policy>();
 	public static ArrayList<Policy> monthly = new ArrayList<Policy>();
+	public static LocalDate date = new LocalDate(1900, 1, 1);
 	@Override
-	public void run() {
-		Action.Initialize();
+	public void run() {	
+		//Parser.Parse();
+		//Action.Initialize();
 		while(true){
 			try {
 				Thread.sleep(5000);
@@ -23,7 +28,8 @@ public class Runtime extends Thread{
 				duration+=temp-past;
 				past=temp;				
 				if(duration>=day){
-					//System.out.println("New Day");
+					date = date.plusDays(1);
+					//System.out.println("New Day"+date.toString());
 					runDailyPolicy();
 					day+=DAYLENGTH;
 				}

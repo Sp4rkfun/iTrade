@@ -25,8 +25,9 @@ else{%>
 <a href="register.html">Sign up!</a><br>
 <div style="display: inline-block;" onclick="myFunction();">Funds</div>
 <div style="display: inline-block;" onclick="brokers();">Brokers</div>
-<div style="display: inline-block;" onclick="userData();">Statistics</div>
-<div id="brokers"></div>
+<div style="display: inline-block;" onclick="funds();">Equity</div>
+<div style="display: inline-block;" onclick="userData();">Transactions</div>
+<div style="position: relative; height: 90%;"><div id="brokers"></div></div>
 </body>
 
 </html>

@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +37,10 @@ public class Offer {
 			proc.registerOutParameter(7, Types.INTEGER);			
 			proc.executeUpdate();
 			int val = proc.getInt(7);
+			System.out.println(val);
 			proc.close();
 			if(val!=-1){
-				if(type=="buy"){
+				if(type.equals("buy")){
 					proc = con.prepareCall("{call match_buy_offer(?,?,?)}");
 					proc.setString(1, price);
 					proc.setInt(2, quantity);
@@ -58,6 +58,7 @@ public class Offer {
 						proc = con.prepareCall("{call perform_transaction(?,?)}");
 						proc.setInt(1, val);
 						proc.setInt(2, seller);
+						System.out.println(val);
 						proc.executeUpdate();
 						proc.close();
 					}
@@ -85,7 +86,6 @@ public class Offer {
 					}
 				}
 			}
-			System.out.println(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

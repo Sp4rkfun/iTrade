@@ -1,79 +1,164 @@
-html,body{
+html, body {
 	margin: 0;
-	padding:0;
+	padding: 0;
+	background-color: cadetblue;
+	height: 100%;
 }
-h1{
+
+h1 {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
 }
-#outer{
+
+#outer {
 	margin-left: auto;
-    margin-right: auto;
-    //width: 200px;
+	margin-right: auto; //
+	width: 200px;
 }
-select{
+
+select {
 	width: 100%;
 }
-input{
-	width:100%;
-	text-align:center;
+
+input {
+	width: 100%;
+	text-align: center;
 }
-.create{
+
+.create {
 	width: 100px;
 }
-#status{
+
+#status {
 	background-color: red;
 	text-align: center;
 }
+
+.blistt {
+	display: flex;
+}
+
 .blist {
 	display: flex;
+	border-bottom: solid 1px rgba(111, 111, 111, 0.2);
 }
-.bno{
+
+.bno {
 	display: flex;
-		flex-grow:10;
+	flex-grow: 10;
+	width: 1px;
 }
-.action{
+
+.action {
 	display: flex;
-		flex-grow:10;
+	flex-grow: 10;
 }
-.bname{
+
+.bname {
 	display: flex;
-		flex-grow:20;
+	flex-grow: 20;
+	width: 1px;
 }
-.blimit{
+
+.blimit {
 	display: flex;
-		flex-grow:10;
+	flex-grow: 10;
+	width: 1px;
 }
-.btime{
+
+.bnot {
 	display: flex;
-		flex-grow:10;
+	flex-grow: 10;
+	width: 1px;
+	font-size: 20px;
+	text-align: center;
 }
-#bselecter{
+
+.bnamet {
+	display: flex;
+	flex-grow: 20;
+	width: 1px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.blimitt {
+	display: flex;
+	flex-grow: 10;
+	width: 1px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.btime {
+	display: flex;
+	flex-grow: 10;
+	width: 1px;
+}
+
+#bselecter {
 	width: 100px;
 	display: inline-block;
 }
-#btyper{
+
+#btyper {
 	width: 100px;
 	display: inline-block;
 }
-#shares{
+
+#shares {
 	width: 100px;
 	display: inline-block;
 }
-#suboffer{
+
+#suboffer {
 	width: 100px;
 	display: inline-block;
 }
-#subshares{
+
+#subshares {
 	width: 100px;
 	display: inline-block;
 }
-.binput{
+
+.binput {
 	display: flex;
-		flex-grow:10;
-		max-width: 80px;
-		min-width:60px;
-		margin-left: auto; 
-		margin-right: auto
+	flex-grow: 10;
+	max-width: 80px;
+	min-width: 60px;
+	margin-left: auto;
+	margin-right: auto
+}
+
+.fundsheader {
+	margin: auto;
+	display: block;
+	text-align: center;
+	font-size: 24pt;
+}
+
+.innerbubble {
+	background-color: white;
+	border-radius: 18px;
+	width: 85%;
+	margin-left: auto;
+	margin-bottom: 50px;
+	margin-right: auto;
+	margin-top: 50px;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 16px;
+	padding-bottom: 10px;
+}
+
+#brokers {
+	width: 90%;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: green;
+	margin: auto;
+	margin-left: 5%;
+	border-radius: 30px;
 }

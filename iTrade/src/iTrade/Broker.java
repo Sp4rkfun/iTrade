@@ -27,18 +27,27 @@ public class Broker {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/all")
-	public String list(){
+	public String list(@Context HttpServletRequest req){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
+		String result="<div class=\"innerbubble\"><span class=\"fundsheader\">Available</span>"
+				+ "<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div>"
+				+ "<div class=\"btime\" flex=\"10\">Commission</div><div class=\"btime\" flex=\"10\">Initial Fee</div><div class=\"btime\" flex=\"10\">Minimum Deposit</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			CallableStatement st = con.prepareCall("{call display_brokers}");  
+			CallableStatement st = con.prepareCall("{call display_brokers(?)}");
+			st.setString(1,(String) req.getSession().getAttribute("user"));
 			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
-				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+"</div><div class=\"blimit\">"+rs.getInt("Limit")+"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
+				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+
+			rs.getString("Name")+"</div><div class=\"blimit\">"+
+						rs.getInt("Limit")+"</div>"
+								+ "<div class=\"btime\">"+rs.getInt("commission")+"</div>"
+								+ "<div class=\"btime\">"+rs.getInt("initial_fee")+"</div>"
+								+ "<div class=\"btime\">"+rs.getInt("initial_deposit")+"</div>"
 						+ "<div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"');\"></div></div><br/>";
 			}
+			result+="</div>";
 			rs.close();
 			st.close();
 		} catch (SQLException e) {
@@ -57,7 +66,9 @@ public class Broker {
 	@Path("/all/has")
 	public String listUserBrokers(@Context HttpServletRequest req){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
+		String result="<div class=\"innerbubble\"><span class=\"fundsheader\">Using</span>"
+				+ "<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div>"
+				+ "<div class=\"btime\" flex=\"10\">Commission</div><div class=\"btime\" flex=\"10\">Initial Fee</div><div class=\"btime\" flex=\"10\">Minimum Deposit</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call User_Brokers_view(?)}");
@@ -65,9 +76,15 @@ public class Broker {
 			ResultSet rs = st.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
-				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+"</div><div class=\"blimit\">"+rs.getInt("Limit")+"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
-						+ "<div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"');\"></div></div><br/>";
+				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div>"
+						+ "<div class=\"bname\">"+rs.getString("Name")+
+						"</div><div class=\"blimit\">"+rs.getInt("Limit")+
+						"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
+						+"<div class=\"btime\">"+rs.getInt("commission")+"</div><div class=\"btime\">"+
+						rs.getInt("initial_fee")+"</div>"+"<div class=\"btime\">"+rs.getInt("initial_deposit")+
+						"</div><div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"');\"></div></div><br/>";
 			}
+			result+="</div>";
 			rs.close();
 			st.close();
 		} catch (SQLException e) {
