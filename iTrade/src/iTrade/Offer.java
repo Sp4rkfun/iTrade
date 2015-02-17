@@ -27,14 +27,14 @@ public class Offer {
 		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Ticker</div><div class=\"blimit\" flex=\"10\">Share Price</div><div class=\"btime\" flex=\"10\">Industry</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			CallableStatement proc = con.prepareCall("{call make_offer(?,?,?,?,?,?,?)}");
-			proc.setString(1, price);
-			proc.setString(2, type);
-			proc.setInt(3, quantity);
-			proc.setInt(4, broker);
-			proc.setString(5, fund);
-			proc.setString(6,(String) req.getSession().getAttribute("user"));
-			proc.registerOutParameter(7, Types.INTEGER);			
+			CallableStatement proc = con.prepareCall("{call make_offer(?,?,?,?,?,?)}");
+			//proc.setString(1, price);
+			proc.setString(1, type);
+			proc.setInt(2, quantity);
+			proc.setInt(3, broker);
+			proc.setString(4, fund);
+			proc.setString(5,(String) req.getSession().getAttribute("user"));
+			proc.registerOutParameter(6, Types.INTEGER);			
 			proc.executeUpdate();
 			int val = proc.getInt(7);
 			System.out.println(val);

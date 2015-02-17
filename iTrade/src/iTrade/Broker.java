@@ -29,9 +29,11 @@ public class Broker {
 	@Path("/all")
 	public String list(@Context HttpServletRequest req){
 		Connection con = null;
-		String result="<div class=\"innerbubble\"><span class=\"fundsheader\">Available</span>"
-				+ "<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div>"
-				+ "<div class=\"btime\" flex=\"10\">Commission</div><div class=\"btime\" flex=\"10\">Initial Fee</div><div class=\"btime\" flex=\"10\">Minimum Deposit</div></div><br/>";
+		String header = "Available";
+		if(req.getSession().getAttribute("user")==null)header = "Brokers";
+		String result="<span class=\"fundsheader\">"+header+"</span>"
+				+ "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Name</div><div class=\"blimitt\">Limit</div><div class=\"btimet\">Trade Time</div>"
+				+ "<div class=\"btimet\">Commission</div><div class=\"btimet\">Initial Fee</div><div class=\"btimet\">Minimum Deposit</div><div class=\"bgap\"></div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call display_brokers(?)}");
@@ -42,6 +44,7 @@ public class Broker {
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+
 			rs.getString("Name")+"</div><div class=\"blimit\">"+
 						rs.getInt("Limit")+"</div>"
+								+ "<div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
 								+ "<div class=\"btime\">"+rs.getInt("commission")+"</div>"
 								+ "<div class=\"btime\">"+rs.getInt("initial_fee")+"</div>"
 								+ "<div class=\"btime\">"+rs.getInt("initial_deposit")+"</div>"
@@ -65,10 +68,11 @@ public class Broker {
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/all/has")
 	public String listUserBrokers(@Context HttpServletRequest req){
+		if(req.getSession().getAttribute("user")==null)return "<div class=\"innerbubble\">";
 		Connection con = null;
-		String result="<div class=\"innerbubble\"><span class=\"fundsheader\">Using</span>"
-				+ "<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div>"
-				+ "<div class=\"btime\" flex=\"10\">Commission</div><div class=\"btime\" flex=\"10\">Initial Fee</div><div class=\"btime\" flex=\"10\">Minimum Deposit</div></div><br/>";
+		String result="<div class=\"innerbubble\"><div class=\"innerbubble\"><span class=\"fundsheader\">Using</span>"
+				+ "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Name</div><div class=\"blimitt\" >Limit</div><div class=\"btimet\" >Trade Time</div>"
+				+ "<div class=\"btimet\" >Commission</div><div class=\"btimet\">Initial Fee</div><div class=\"btimet\" >Minimum Deposit</div><div class=\"bgap\"></div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call User_Brokers_view(?)}");
@@ -84,7 +88,7 @@ public class Broker {
 						rs.getInt("initial_fee")+"</div>"+"<div class=\"btime\">"+rs.getInt("initial_deposit")+
 						"</div><div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"');\"></div></div><br/>";
 			}
-			result+="</div>";
+			//result+="</div>";
 			rs.close();
 			st.close();
 		} catch (SQLException e) {
@@ -112,7 +116,7 @@ public class Broker {
 			ResultSet rs = proc.getResultSet();
 			int cnt = 1;
 			while (rs.next()) {
-				result+="<option value=\""+rs.getInt("Broker_id")+"\">"+rs.getString("Name")+"</option>";
+				result+="<option value=\""+rs.getInt("Broker_id")+"\">"+rs.getString("Name")+": "+rs.getString("Investment")+"</option>";
 			}
 			rs.close();
 			proc.close();
@@ -132,7 +136,7 @@ public class Broker {
 	@Path("{id}")
 	public String allPolicies(@PathParam("id") int id){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
+		String result="<div class=\"innerbubble\"><div class=\"blistt\"><div class=\"bno\">No.</div><div class=\"bnamet\" >Name</div><div class=\"blimitt\" >Limit</div><div class=\"btimet\" >Trade Time</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call display_brokers()}");
@@ -152,7 +156,7 @@ public class Broker {
 				rss.close();
 				sta.close();
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Name")+"</div><div class=\"blimit\">"+rs.getInt("Limit")+"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
-						+ "<div class=\"binput\">"+s+"<input type=\"submit\" value=\"Add\"></div></div><br/>";
+						+ "<div class=\"binput\">"+s+"<input type=\"submit\" value=\"Add\"></div></div><br/></div>";
 			}
 			rs.close();
 			st.close();
@@ -173,7 +177,7 @@ public class Broker {
 	@Path("add/{id}/{amt}")
 	public String addBroker(@Context HttpServletRequest req, @PathParam("id") int id, @PathParam("amt") Float amount){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Name</div><div class=\"blimit\" flex=\"10\">Limit</div><div class=\"btime\" flex=\"10\">Trade Time</div></div><br/>";
+		String result="<div class=\"blistt\"><div class=\"bno\">No.</div><div class=\"bname\" >Name</div><div class=\"blimit\" >Limit</div><div class=\"btime\" >Trade Time</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			//Statement st = con.createStatement();

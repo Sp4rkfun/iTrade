@@ -1,37 +1,66 @@
 <!DOCTYPE html>
 <%@page import="iTrade.User"%>
 <html>
-<% String username = (String)request.getSession().getAttribute("user"); %>
+<%
+	String username = (String) request.getSession()
+			.getAttribute("user");
+%>
 <head>
 <script type="text/javascript" src="index.js"></script>
 <link rel="stylesheet" href="index.css">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
-<body onload="myFunction();">
-<% if(username==null){%>
-	<div>Username<input class="create" id="user" type="text">Password:<input class="create" id="pass" type="password"><input class="create" type="submit" value="Sign In" onclick="login();"></div>
-	<% 
-}
-else{%>
-	<div>Hello, <%= username %>
-	<input class="create" type="submit" value="Sign Out" onclick="logout();">
+<body onload="ifunds();">
+</br>
+	<%
+		if (username == null) {
+	%>
+	<div style="margin: auto; position: relative; width: 600px; font-size: 16pt; text-align: center; color: white;">
+		Username: <input class="create" id="user" type="text"> Password: <input
+			class="create" id="pass" type="password"> <input
+			class="create" type="submit" value="Sign In" onclick="login();">
 	</div>
-	<div>Balance: <%= User.getBalance(request) %></div>
-<%}
-%>
+		<br>
 
-<a href="broker.html">Create A Broker</a>
-<a href="policy.html">Create A Policy</a>
-<a href="register.html">Sign up!</a><br>
+	<div id="container"
+		style="position: relative; height: 90%; width: 90%; margin: auto; border-radius: 10px;">
+		<div
+			style="width: 100%; position: relative; display: flex; align-items: center; background: cadetblue;">
+			<div class="tabs"  style="background-color: #F1AB00;" onclick="funds();">Funds</div>
+			<div class="tabs" style="background-color: #CD1E10;" onclick="brokers();">Brokers</div>
+			<div class="tabs" style="background-color: #007E3A;" onclick="equity();">Equity</div>
+			<div class="tabs" style="background-color: #FADF00;" onclick="userData();">Sign Up</div>
+		</div>
+		<div id="brokers"></div>
+	</div>
+	<%
+		} else {
+	%>
+	<div style="margin: auto; position: relative; width: 25%; text-align: center; font-size: 16pt; color: white;">
+		Hello,
+		<%=username%>
+		<input class="create" type="submit" value="Sign Out"
+			onclick="logout();">
+	</div>
+	<div id="balance" class="hidden">
+		<%=User.getBalance(request)%></div>
+			<br>
 
-<div style="position: relative; height: 90%; width: 90%; margin: auto;background: green; border-radius:10px;">
-<div style="width: 100%; position: relative; display: inline-block; background: cadetblue;">
-<div class="tabs" onclick="myFunction();">Funds</div>
-<div class="tabs" onclick="brokers();">Brokers</div>
-<div class="tabs" onclick="funds();">Equity</div>
-<div class="tabs" onclick="userData();">Transactions</div>
-</div>
-<div id="brokers"></div></div>
+	<div id="container"
+		style="position: relative; height: 90%; width: 90%; margin: auto; border-radius: 10px;">
+		<div
+			style="width: 100%; position: relative; display: flex; align-items: center; background: cadetblue;">
+			<div class="tabs" style="background-color: #F1AB00;" onclick="funds();">Funds</div>
+			<div class="tabs" style="background-color: #CD1E10;" onclick="brokers();">Brokers</div>
+			<div class="tabs" style="background-color: #007E3A;" onclick="equity();">Equity</div>
+			<div class="tabs" style="background-color: #FADF00;" onclick="userData();">Transactions</div>
+		</div>
+		<div id="brokers"></div>
+	</div>
+	<%
+		}
+	%>
 </body>
 
 </html>

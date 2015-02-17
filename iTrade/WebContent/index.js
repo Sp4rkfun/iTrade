@@ -1,7 +1,13 @@
 var brokerId = 0;
 var brokerName = "";
 var selectedFund = "";
-function myFunction() {
+var style ="";
+function ifunds(){
+	style = document.getElementById("container").getAttribute("style");
+	funds();
+}
+function funds() {
+	setFolderColor("#F1AB00");
 	var status = document.getElementById("brokers");
 	var query = "rest/fund/all";
 	ajax(query, function(html) {
@@ -13,6 +19,7 @@ function brokers() {
 	var status = document.getElementById("brokers");
 	var valid = true;
 	var text;
+	setFolderColor("#CD1E10");
 	var query = "rest/broker/all/has";
 	ajax(query, function(html) {
 		text = html;
@@ -43,11 +50,13 @@ function policies(id, name) {
 	$("#label1").text("Type");
 	$("#label2").text("Frequency");
 	$("#label3").text("Condition");
-	document.getElementById("brokers").innerHTML = "<div>"
+	document.getElementById("brokers").innerHTML = "<div id=\"brokername\">"
 			+ brokerName
-			+ "<input type=\"submit\" style=\"width:100px; margin-left:10px\"value=\"Back\" onClick=\"brokers();\"></div>"
-			+ "<input type=\"text\" id=\"balance\"><input type=\"submit\" value=\"Create Account\" id=\"sbalance\" onclick=\"addBroker();\">";
+			+ "</br><input type=\"submit\" style=\"width:100px;\"value=\"Back\" onClick=\"brokers();\"></div></br>"
+			+ "<div style=\"text-align: center;\"><div id=\"curbal\"></div><input type=\"text\" id=\"balance\">" +
+					"<input type=\"submit\" value=\"Create Account\" style=\"width:120px;\" id=\"sbalance\" onclick=\"addBroker();\"></div>";
 	var query = "rest/policy/all/exclusive/" + id;
+	$("#curbal").text("Balance:" +$("#balance").text());
 	ajax(query, function(html) {
 		var status = document.getElementById("brokers");
 		status.innerHTML += html;
@@ -89,18 +98,20 @@ function addBroker() {
 
 
 function adjustEstimate(){
-	
+	$("#eprice").text("Estimated price: "+$("#shares").val()*$("#sprice").text());
 }
 
 function userData(){
 	var status = document.getElementById("brokers");
+	setFolderColor("#FADF00");
 	status.innerHTML = "";
 	var query = "rest/fund/user";
 	ajax(query, function(html) {
 		status.innerHTML = html;
 	});
 }
-function funds(){
+function equity(){
+	setFolderColor("#007E3A");
 	var status = document.getElementById("brokers");
 	var query = "rest/fund/user/funds";
 	ajax(query, function(html) {
@@ -117,4 +128,12 @@ function ajax(query, callback) {
 			callback(html);
 		}
 	});
+}
+
+function setFolderColor(color){
+	document.getElementById("container").setAttribute("style",style+ "background-color:"+color);
+}
+
+function brokerSelect(value){
+	alert($("#b"+value).val()+value)
 }

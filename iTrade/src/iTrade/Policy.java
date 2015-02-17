@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,7 @@ public class Policy {
 	@Path("/all")
 	public String all(){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div></div><br/>";
+		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" >Type</div><div class=\"blimit\" >Frequency</div><div class=\"btime\" >Condition</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call display_policies()}");
@@ -65,7 +64,7 @@ public class Policy {
 	@Path("/all/{broker}")
 	public String allByBroker(@PathParam("broker")String broker){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
+		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" >Type</div><div class=\"blimit\" >Frequency</div><div class=\"btime\" >Condition</div><div class=\"action\">Actions</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call get_broker_policies(?)}");
@@ -125,7 +124,8 @@ public class Policy {
 	@Path("/all/exclusive/{broker}")
 	public String allOnlyByBroker(@Context HttpServletRequest req, @PathParam("broker")String broker){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div><div class=\"action\">Actions</div></div><br/>";
+		String result="<div class=\"innerbubble\"><div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Type</div><div class=\"blimitt\">Frequency</div>"
+				+ "<div class=\"btimet\">Condition</div><div class=\"bactiont\">Actions</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call get_broker_policies(?)}");
@@ -144,7 +144,7 @@ public class Policy {
 				rss.close();
 				sta.close();
 				String state="";
-				if(req.getSession().getAttribute("user").equals("admin")){
+				if(req.getSession().getAttribute("user")!=null&&req.getSession().getAttribute("user").equals("admin")){
 					state="<div class=\"binput\"><input type=\"submit\" value=\"Remove\" onClick=\"removeFromBroker("+rs.getString("Rule_id")+")\"></div>";
 				}
 				result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Type")+"</div><div class=\"blimit\">"+rs.getString("Frequency")+"</div><div class=\"btime\">"+rs.getString("Condition")+"</div>"
@@ -152,6 +152,7 @@ public class Policy {
 			}
 			rs.close();
 			st.close();
+			result+="</div>";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -169,7 +170,7 @@ public class Policy {
 	@Path("{broker}/{policy}")
 	public String addPolicyToBroker(@PathParam("broker") String broker, @PathParam("policy") String policy){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Type</div><div class=\"blimit\" flex=\"10\">Frequency</div><div class=\"btime\" flex=\"10\">Condition</div></div><br/>";
+		String result="<div class=\"blist\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Type</div><div class=\"blimitt\" >Frequency</div><div class=\"btimet\" >Condition</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call broker_policy(?,?)}");

@@ -14,9 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.apache.tomcat.jdbc.pool.PoolProperties;
-
 @Path("/user")
 public class User {
 	@GET
@@ -113,5 +110,32 @@ public class User {
 				}
 		}
 		return result;
+	}
+	
+	public static String signUp(){
+		return "<div class=\"innerbubble\"><div id=\"outer\">"+
+		"<h1>Register</h1>"+
+		"<div id=\"status\" style=\"text-align: center; width: 100%\"></div>"+
+		"<label for=\"name\">Username</label><br/>"+
+
+		 "<input class=\"biginput\" type=\"text\" id=\"name\" name=\"name\"/><br/>"+
+
+		 "<label for=\"password\">Password</label><br/>"+
+
+		 "<input class=\"biginput\" type=\"password\" id=\"password\" name=\"password\"/><br/>"+
+
+		 "<label for=\"confirmpassword\">Confirm Password</label><br/>"+
+
+		 "<input class=\"biginput\" type=\"password\" id=\"passwordcheck\" name=\"confirmpassword\"/><br/>"+
+		 
+		"<label for=\"difficulty\">Starting Difficulty</label><br/>"+
+		"<select class=\"biginput\" name=\"difficulty\" id=\"difficulty\">"+
+		"<option value=\"10000\">Easy $10000</option>"+
+		"<option value=\"5000\">Medium $5000</option>"+
+		"<option value=\"2500\">Hard $2500</option>"+
+		"</select> <br/>"+
+		"<br/>"+
+		"<input style=\"display:block; margin-left: auto; margin-right: auto\" type=\"submit\" value=\"Register\" onclick=\"myFunction();\"/>"+
+		"</div><div>";
 	}
 }
