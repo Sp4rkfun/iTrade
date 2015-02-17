@@ -1,5 +1,8 @@
 package iTrade;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.joda.time.LocalDate;
@@ -10,7 +13,7 @@ import iTrade.policy.Policy;
 public class Runtime extends Thread{
 	long duration;
 	long temp;
-	private final int DAYLENGTH=4000;//120000
+	private final int DAYLENGTH=30000;//120000
 	long day=DAYLENGTH,week=7*DAYLENGTH,month=4*7*DAYLENGTH;
 	long past=System.currentTimeMillis();
 	public static ArrayList<Policy> daily = new ArrayList<Policy>();
@@ -21,14 +24,32 @@ public class Runtime extends Thread{
 	public void run() {	
 		//Parser.Parse();
 		//Action.Initialize();
+		Connection con=null;
+		CallableStatement st;
 		while(true){
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(3000);
 				temp=System.currentTimeMillis();
 				duration+=temp-past;
 				past=temp;				
 				if(duration>=day){
-					date = date.plusDays(1);
+					//date = date.plusDays(1);
+					try {
+						con = Database.initialize().getConnection();
+						st = con.prepareCall("{call increment_date(?)}");
+						st.setInt(1, 1);
+						st.executeUpdate();
+						st.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					finally{
+						if (con != null)
+							try {
+								con.close();
+							} catch (Exception ignore) {
+							}
+					}
 					//System.out.println("New Day"+date.toString());
 					runDailyPolicy();
 					day+=DAYLENGTH;

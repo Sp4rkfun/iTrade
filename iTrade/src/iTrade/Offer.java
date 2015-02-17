@@ -36,7 +36,7 @@ public class Offer {
 			proc.setString(5,(String) req.getSession().getAttribute("user"));
 			proc.registerOutParameter(6, Types.INTEGER);			
 			proc.executeUpdate();
-			int val = proc.getInt(7);
+			int val = proc.getInt(6);
 			System.out.println(val);
 			proc.close();
 			if(val!=-1){

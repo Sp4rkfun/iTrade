@@ -53,7 +53,7 @@ function policies(id, name) {
 	document.getElementById("brokers").innerHTML = "<div id=\"brokername\">"
 			+ brokerName
 			+ "</br><input type=\"submit\" style=\"width:100px;\"value=\"Back\" onClick=\"brokers();\"></div></br>"
-			+ "<div style=\"text-align: center;\"><div id=\"curbal\"></div><input type=\"text\" id=\"balance\">" +
+			+ "<div style=\"text-align: center;\"><div id=\"curbal\"></div><input type=\"text\" id=\"amt\">" +
 					"<input type=\"submit\" value=\"Create Account\" style=\"width:120px;\" id=\"sbalance\" onclick=\"addBroker();\"></div>";
 	var query = "rest/policy/all/exclusive/" + id;
 	$("#curbal").text("Balance:" +$("#balance").text());
@@ -89,7 +89,7 @@ function submitOffer() {
 }
 
 function addBroker() {
-	var query = "rest/broker/add/" + brokerId + "/" + $("#balance").val();
+	var query = "rest/broker/add/" + brokerId + "/" + $("#amt").val();
 	ajax(query, function(html) {
 		location.reload();
 	});
