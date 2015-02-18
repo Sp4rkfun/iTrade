@@ -41,8 +41,6 @@ public class Fund {
 						+ "</div>"
 						+ "<div class=\"binput\"><input class=\"create\" type=\"submit\" value=\"Select\" onClick=\"selectFund('"
 						+ rs.getString("Ticker") + "');\"></div></div><br/>";
-				// +
-				// "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 			}
 			rs.close();
 			st.close();
@@ -61,7 +59,7 @@ public class Fund {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	@Path("/query/{name}")
+	@Path("/reqoffer/{name}")
 	public String transact(@PathParam("name") String name) {
 		Connection con = null;
 		String result = "<div class=\"innerbubble\">";
@@ -71,7 +69,6 @@ public class Fund {
 			proc.setString(1, name);
 			proc.executeQuery();
 			ResultSet rs = proc.getResultSet();
-			int cnt = 1;
 			while (rs.next()) {
 				result += "<div style=\"font-size:20pt; text-align: center; margin: auto;\">"
 						+ name
@@ -101,8 +98,8 @@ public class Fund {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	@Path("/user/funds")
-	public String userShares(@Context HttpServletRequest req) {
+	@Path("/equity")
+	public String userEquity(@Context HttpServletRequest req) {
 		Connection con = null;
 		String result = "<div class=\"innerbubble\"><span class=\"fundsheader\">Shares</span>"
 				+ "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\" >Ticker</div><div class=\"blimitt\" >Shares Owned</div></div><br/>";
@@ -120,12 +117,9 @@ public class Fund {
 						+ rs.getString("Ticker")
 						+ "</div><div class=\"blimit\">"
 						+ rs.getString("Shares") + "</div></div><br/>";
-				// +
-				// "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 			}
 			rs.close();
 			proc.close();
-			// result+="</div>";
 			proc = con.prepareCall("{call User_Brokers_view(?)}");
 			proc.setString(1, (String) req.getSession().getAttribute("user"));
 			proc.executeQuery();
@@ -138,38 +132,6 @@ public class Fund {
 						+ "</div><div class=\"bname\">" + rs.getString("Name")
 						+ "</div><div class=\"blimit\">"
 						+ rs.getString("Investment") + "</div></div><br/>";
-				/*CallableStatement proc1 = con
-						.prepareCall("{call transaction_history(?,?)}");
-				proc1.setString(1,
-						(String) req.getSession().getAttribute("user"));
-				proc1.setString(2, rs.getString("Broker_id"));
-				proc1.executeQuery();
-				ResultSet rs1 = proc1.getResultSet();
-				int cnt1 = 1;
-				while (rs1.next()) {
-					int mult = 1;
-					if (rs1.getString("Buyer_user").equals(
-							req.getSession().getAttribute("user")))
-						mult = -1;
-					result += "<div class=\"blist\"><div class=\"bno\">"
-							+ (cnt1++) + "</div><div class=\"bname\">"
-							+ rs1.getString("Fund_id")
-							+ "</div><div class=\"bname\">"
-							+ rs1.getString("Time")
-							+ "</div><div class=\"blimit\">" + mult
-							* Float.parseFloat(rs1.getString("Sale_price"))
-							* rs1.getInt("No_of_shares")
-							+ "</div><div class=\"blimit\">"
-							+ Float.parseFloat(rs1.getString("Sale_price"))
-							+ "</div><div class=\"blimit\">"
-							+ rs1.getInt("No_of_shares") + "</div></div><br/>";
-					// +
-					// "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
-				}
-				rs1.close();
-				proc1.close();*/
-				// +
-				// "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 			}
 			rs.close();
 			proc.close();
@@ -188,8 +150,8 @@ public class Fund {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	@Path("/user")
-	public String userFunds(@Context HttpServletRequest req) {
+	@Path("/transactions")
+	public String transactions(@Context HttpServletRequest req) {
 		Connection con = null;
 		if (req.getSession().getAttribute("user") == null)
 			return User.signUp();
@@ -200,20 +162,26 @@ public class Fund {
 			CallableStatement proc;
 			ResultSet rs;
 			proc = con.prepareCall("{call transaction_history(?)}");
-			proc.setString(1,(String) req.getSession().getAttribute("user"));
-			//proc.setInt(1,-1);
+			proc.setString(1, (String) req.getSession().getAttribute("user"));
 			proc.executeQuery();
 			rs = proc.getResultSet();
 			int cnt = 1;
 			result += "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\" >Fund</div><div class=\"bnamet\" >Date</div><div class=\"blimitt\" >Total</div>"
 					+ "<div class=\"blimitt\" >Share Price</div><div class=\"blimitt\" >Shares</div></div><br/>";
-			// +
-			// "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";
 			while (rs.next()) {
-				result += "<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\" >"+rs.getString("Fund_id")+"</div><div class=\"bname\" >"+rs.getString("Time")+"</div><div class=\"blimit\" >"+Float.parseFloat(rs.getString("Sale_price"))*Float.parseFloat(rs.getString("No_of_shares"))+"</div>"
-						+ "<div class=\"blimit\" >"+rs.getString("Sale_price")+"</div><div class=\"blimit\" >"+rs.getString("No_of_shares")+"</div></div><br/>";
+				result += "<div class=\"blist\"><div class=\"bno\">" + (cnt++)
+						+ "</div><div class=\"bname\" >"
+						+ rs.getString("Fund_id")
+						+ "</div><div class=\"bname\" >" + rs.getString("Time")
+						+ "</div><div class=\"blimit\" >"
+						+ Float.parseFloat(rs.getString("Sale_price"))
+						* Float.parseFloat(rs.getString("No_of_shares"))
+						+ "</div>" + "<div class=\"blimit\" >"
+						+ rs.getString("Sale_price")
+						+ "</div><div class=\"blimit\" >"
+						+ rs.getString("No_of_shares") + "</div></div><br/>";
 			}
-			result+="<div>";
+			result += "<div>";
 			rs.close();
 			proc.close();
 		} catch (SQLException e) {
@@ -227,12 +195,4 @@ public class Fund {
 		}
 		return result;
 	}
-
 }
-
-// result+="<div class=\"blist\"><div class=\"bno\">"+(cnt++)+"</div><div class=\"bname\">"+rs.getString("Ticker")+
-// "</div><div class=\"blimit\">"+rs.getString("Share_Price")+
-// "</div><div class=\"btime\">"+rs.getString("Type")+"</div>"+
-// "<div class=\"binput\"><input class=\"create\" type=\"submit\" value=\"Select\" onClick=\"selectFund('"+rs.getString("Ticker")+"');\"></div></div><br/>";
-// +
-// "<div class=\"binput\"><input type=\"submit\" value=\"Add\" onClick=\"addToBroker("+rs.getString("Rule_id")+")\"></div></div><br/>";

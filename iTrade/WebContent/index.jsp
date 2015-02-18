@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="index.css">
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script type="text/javascript" src="sha/sha.js"></script>
 </head>
 <body onload="ifunds();">
 </br>

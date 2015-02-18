@@ -18,17 +18,17 @@ import javax.ws.rs.core.MediaType;
 @Path("/offer")
 public class Offer {
 	
+	@SuppressWarnings("resource")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("{price}/{type}/{quantity}/{broker}/{fund}")
 	public String submit(@Context HttpServletRequest req, @PathParam("price") String price, @PathParam("type") String type, @PathParam("quantity") int quantity,
 			@PathParam("broker") int broker, @PathParam("fund") String fund){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" flex=\"10\">Ticker</div><div class=\"blimit\" flex=\"10\">Share Price</div><div class=\"btime\" flex=\"10\">Industry</div></div><br/>";
+		String result="<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" >Ticker</div><div class=\"blimit\" >Share Price</div><div class=\"btime\" >Industry</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement proc = con.prepareCall("{call make_offer(?,?,?,?,?,?)}");
-			//proc.setString(1, price);
 			proc.setString(1, type);
 			proc.setInt(2, quantity);
 			proc.setInt(3, broker);
@@ -94,6 +94,7 @@ public class Offer {
 					con.close();
 				} catch (Exception ignore) {
 				}
+			
 		}
 		return result;
 	}

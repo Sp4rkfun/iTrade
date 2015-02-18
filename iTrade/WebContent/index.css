@@ -191,6 +191,8 @@ input {
 	width: 90%;
 	-webkit-transform: translate(-50%, 0%);
 	transform: translate(-50%, 0%);
+	overflow-y: auto;
+	height: 90%;
 }
 
 .tabs {
@@ -223,11 +225,12 @@ input {
 	text-align: center;
 	font-size: 24pt;
 }
+
 #curbal {
 	text-align: center;
 	font-size: 16pt;
 }
 
-.hidden{
+.hidden {
 	visibility: hidden;
 }

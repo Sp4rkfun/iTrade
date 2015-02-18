@@ -1,19 +1,16 @@
 package iTrade;
 
+import iTrade.policy.Policy;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.joda.time.LocalDate;
-
-import iTrade.action.Action;
-import iTrade.policy.Parser;
-import iTrade.policy.Policy;
 public class Runtime extends Thread{
 	long duration;
 	long temp;
-	private final int DAYLENGTH=30000;//120000
+	private final int DAYLENGTH=10000;//120000
 	long day=DAYLENGTH,week=7*DAYLENGTH,month=4*7*DAYLENGTH;
 	long past=System.currentTimeMillis();
 	public static ArrayList<Policy> daily = new ArrayList<Policy>();

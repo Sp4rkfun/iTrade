@@ -1,15 +1,15 @@
 package iTrade.action;
 
+import static iTrade.Runtime.daily;
+import static iTrade.Runtime.monthly;
+import static iTrade.Runtime.weekly;
+import iTrade.Database;
+import iTrade.policy.Policy;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-
-import iTrade.Database;
-import iTrade.policy.Policy;
-import static iTrade.Runtime.*;
 
 public abstract class Action {
 	public String user, broker;

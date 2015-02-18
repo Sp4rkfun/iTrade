@@ -20,18 +20,17 @@ function brokers() {
 	var valid = true;
 	var text;
 	setFolderColor("#CD1E10");
-	var query = "rest/broker/all/has";
+	var query = "rest/broker/all";
 	ajax(query, function(html) {
-		text = html;
-		query = "rest/broker/all";
-		ajax(query, function(html) {
-			status.innerHTML = text+html;
-		});
+			status.innerHTML = html;
 	});
 }
 
 function login() {
-	var query = "rest/user/" + $("#user").val() + "/" + $("#pass").val();
+	 var shaObj = new jsSHA($("#pass").val(), "ASCII");
+	    var hash = shaObj.getHash("SHA-512", "HEX");
+	    //alert(hash);
+	var query = "rest/user/" + $("#user").val() + "/" + hash;
 	ajax(query, function(html) {
 		location.reload();
 	});
@@ -66,10 +65,10 @@ function policies(id, name) {
 function selectFund(fund) {
 	selectedFund = fund;
 	var status = document.getElementById("brokers");
-	var query = "rest/fund/query/" + fund;
+	var query = "rest/fund/reqoffer/" + fund;
 	ajax(query, function(html) {
 		status.innerHTML = html;
-		query = "rest/broker/all/has/dropdown"
+		query = "rest/broker/dropdown"
 		ajax(query, function(html) {
 			$("#bselect").html(html);
 		})
@@ -105,7 +104,7 @@ function userData(){
 	var status = document.getElementById("brokers");
 	setFolderColor("#FADF00");
 	status.innerHTML = "";
-	var query = "rest/fund/user";
+	var query = "rest/fund/transactions";
 	ajax(query, function(html) {
 		status.innerHTML = html;
 	});
@@ -113,7 +112,7 @@ function userData(){
 function equity(){
 	setFolderColor("#007E3A");
 	var status = document.getElementById("brokers");
-	var query = "rest/fund/user/funds";
+	var query = "rest/fund/equity";
 	ajax(query, function(html) {
 		status.innerHTML = html;
 	});

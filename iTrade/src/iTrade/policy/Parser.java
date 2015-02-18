@@ -3,18 +3,14 @@ package iTrade.policy;
 import iTrade.Database;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Stack;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class Parser {
 	static class Node{

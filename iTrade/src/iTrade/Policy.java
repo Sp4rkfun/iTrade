@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/policy")
 public class Policy {
+	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("{type}/{frequency}/{condition}")
@@ -23,6 +24,7 @@ public class Policy {
 			@PathParam("condition") String condition){
 		return ""+db(type,frequency,condition);
 	}
+	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("{type}/{frequency}/{condition}/{broker}")
@@ -30,6 +32,7 @@ public class Policy {
 			@PathParam("condition") String condition,@PathParam("broker") String broker){
 		return addPolicyToBroker(broker,""+db(type,frequency,condition) );
 	}
+	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/all")
@@ -170,14 +173,13 @@ public class Policy {
 	@Path("{broker}/{policy}")
 	public String addPolicyToBroker(@PathParam("broker") String broker, @PathParam("policy") String policy){
 		Connection con = null;
-		String result="<div class=\"blist\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Type</div><div class=\"blimitt\" >Frequency</div><div class=\"btimet\" >Condition</div></div><br/>";
+		//String result="<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Type</div><div class=\"blimitt\" >Frequency</div><div class=\"btimet\" >Condition</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call broker_policy(?,?)}");
 			st.setInt(1, Integer.parseInt(broker));
 			st.setInt(2, Integer.parseInt(policy));
 			st.executeQuery();
-			//rs.close();
 			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -202,7 +204,6 @@ public class Policy {
 			st.setInt(1, Integer.parseInt(broker));
 			st.setInt(2, Integer.parseInt(policy));
 			st.executeUpdate();
-			//rs.close();
 			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
