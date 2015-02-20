@@ -151,18 +151,67 @@ public class Fund {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/transactions")
-	public String transactions(@Context HttpServletRequest req) {
+	public String transactionsAll(@Context HttpServletRequest req) {
 		Connection con = null;
 		if (req.getSession().getAttribute("user") == null)
 			return User.signUp();
 		String result = "<div class=\"innerbubble\"></br><div style=\"text-align:center; font-size:14pt;\">Broker: "
-				+ "<select class=\"biginput\"><option value=\"All\">All</option></select></div></br>";
+				+ "<select id=\"transb\" onchange=\"transactions();\" class=\"biginput\"><option value=\"All\">All</option>"+Broker.brokerDropdown(req)+"</select></div></br>";
 		try {
 			con = Database.initialize().getConnection();
 			CallableStatement proc;
 			ResultSet rs;
 			proc = con.prepareCall("{call transaction_history(?)}");
 			proc.setString(1, (String) req.getSession().getAttribute("user"));
+			proc.executeQuery();
+			rs = proc.getResultSet();
+			int cnt = 1;
+			result += "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\" >Fund</div><div class=\"bnamet\" >Date</div><div class=\"blimitt\" >Total</div>"
+					+ "<div class=\"blimitt\" >Share Price</div><div class=\"blimitt\" >Shares</div></div><br/>";
+			while (rs.next()) {
+				result += "<div class=\"blist\"><div class=\"bno\">" + (cnt++)
+						+ "</div><div class=\"bname\" >"
+						+ rs.getString("Fund_id")
+						+ "</div><div class=\"bname\" >" + rs.getString("Time")
+						+ "</div><div class=\"blimit\" >"
+						+ Float.parseFloat(rs.getString("Sale_price"))
+						* Float.parseFloat(rs.getString("No_of_shares"))
+						+ "</div>" + "<div class=\"blimit\" >"
+						+ rs.getString("Sale_price")
+						+ "</div><div class=\"blimit\" >"
+						+ rs.getString("No_of_shares") + "</div></div><br/>";
+			}
+			result += "<div>";
+			rs.close();
+			proc.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null)
+				try {
+					con.close();
+				} catch (Exception ignore) {
+				}
+		}
+		return result;
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	@Path("/transactions/{broker}")
+	public String transactionsByBroker(@Context HttpServletRequest req, @PathParam("broker") String broker) {
+		Connection con = null;
+		if (req.getSession().getAttribute("user") == null)
+			return User.signUp();
+		String result = "<div class=\"innerbubble\"></br><div style=\"text-align:center; font-size:14pt;\">Broker: "
+				+ "<select id=\"transb\" onchange=\"transactions();\" class=\"biginput\"><option value=\"All\">All</option>"+Broker.brokerDropdownById(req,broker)+"</select></div></br>";
+		try {
+			con = Database.initialize().getConnection();
+			CallableStatement proc;
+			ResultSet rs;
+			proc = con.prepareCall("{call transaction_history(?,?)}");
+			proc.setString(1, (String) req.getSession().getAttribute("user"));
+			proc.setString(2, broker);
 			proc.executeQuery();
 			rs = proc.getResultSet();
 			int cnt = 1;

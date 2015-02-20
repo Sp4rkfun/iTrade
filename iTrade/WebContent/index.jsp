@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="sha/sha.js"></script>
 </head>
 <body onload="ifunds();">
+<div id="status" style="text-align: center; width: 100%"></div>
 </br>
 	<%
 		if (username == null) {

@@ -134,7 +134,7 @@ public class User {
 				+ "<option value=\"2500\">Hard $2500</option>"
 				+ "</select> <br/>"
 				+ "<br/>"
-				+ "<input style=\"display:block; margin-left: auto; margin-right: auto\" type=\"submit\" value=\"Register\" onclick=\"myFunction();\"/>"
+				+ "<input style=\"display:block; margin-left: auto; margin-right: auto\" type=\"submit\" value=\"Register\" onclick=\"register();\"/>"
 				+ "</div><div>";
 	}
 }

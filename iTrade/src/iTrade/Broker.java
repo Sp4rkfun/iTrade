@@ -92,7 +92,10 @@ public class Broker {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/dropdown")
-	public String brokerDropdown(@Context HttpServletRequest req){
+	public static String brokerDropdown(@Context HttpServletRequest req){
+		return brokerDropdownById(req, "");
+	}
+	public static String brokerDropdownById(HttpServletRequest req, String broker){
 		Connection con = null;
 		String result="";
 		try {
@@ -102,7 +105,11 @@ public class Broker {
 			proc.executeQuery();
 			ResultSet rs = proc.getResultSet();
 			while (rs.next()) {
+				if(broker==""||!broker.equals(rs.getString("Broker_id"))||broker.equals("All"))
 				result+="<option value=\""+rs.getInt("Broker_id")+"\">"+rs.getString("Name")+": "+rs.getString("Investment")+"</option>";
+				else{
+					result+="<option selected value=\""+rs.getInt("Broker_id")+"\">"+rs.getString("Name")+": "+rs.getString("Investment")+"</option>";
+				}
 			}
 			rs.close();
 			proc.close();

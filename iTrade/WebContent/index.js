@@ -136,3 +136,46 @@ function setFolderColor(color){
 function brokerSelect(value){
 	alert($("#b"+value).val()+value)
 }
+function transactions(){
+	var b = $("#transb").val();
+	var status = $("#brokers");
+		var query = "rest/fund/transactions/"+b;
+		ajax(query, function(html) {
+		status.html(html);
+	});
+}
+
+function register() {
+	var name = document.getElementById("name").value;
+	var password = document.getElementById("password").value;
+	var passwordCheck = document.getElementById("passwordcheck").value;
+	var difficulty = document.getElementById("difficulty").value;
+	var status = document.getElementById("status");
+	var valid=true;
+	status.innerHTML="";
+	if(name==''){
+		valid=false;
+		status.innerHTML+="Enter a Username!<br\>"
+	}
+	if(password==''){
+		valid=false;
+		status.innerHTML+="Enter a Password!<br\>"
+	}
+	else if(password!=passwordCheck){
+		valid=false;
+		status.innerHTML+="Passwords don't match!<br\>"
+	}
+	if(valid.valueOf()==true){
+		//document.getElementById("status").setAttribute("style", "background-color:red");
+		var query="rest/user/"+name+"/"+password+"/"+difficulty;
+		ajax(query, function(html) {
+			if(html==1){
+				status.innerHTML="Username taken!<br\>"
+			}
+			else{
+				
+			}
+			});
+	}
+	return false;
+	}
