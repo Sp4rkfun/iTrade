@@ -212,6 +212,8 @@ function register() {
 	var difficulty = document.getElementById("difficulty").value;
 	var status = document.getElementById("status");
 	var valid = true;
+	var shaObj = new jsSHA($("#password").val(), "ASCII");
+	var hash = shaObj.getHash("SHA-512", "HEX");
 	status.innerHTML = "";
 	if (name == '') {
 		valid = false;
@@ -227,12 +229,12 @@ function register() {
 	if (valid.valueOf() == true) {
 		// document.getElementById("status").setAttribute("style",
 		// "background-color:red");
-		var query = "rest/user/" + name + "/" + password + "/" + difficulty;
+		var query = "rest/user/" + name + "/" + hash + "/" + difficulty;
 		ajax(query, function(html) {
 			if (html == 1) {
 				status.innerHTML = "Username taken!<br\>"
 			} else {
-
+				location.reload();
 			}
 		});
 	}

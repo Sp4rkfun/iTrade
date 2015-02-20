@@ -19,10 +19,10 @@ public class User {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("{name}/{password}/{difficulty}")
-	public int register(@PathParam("name") String name,
+	public String register(@PathParam("name") String name,
 			@PathParam("password") String password,
 			@PathParam("difficulty") String difficulty) {
-		return db(name, password, Integer.parseInt(difficulty));
+		return ""+db(name, password, Integer.parseInt(difficulty));
 	}
 
 	@GET
@@ -117,6 +117,7 @@ public class User {
 		return result;
 	}
 		
+	@SuppressWarnings("resource")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/transfer/{src}/{dst}/{amt}")
@@ -135,7 +136,6 @@ public class User {
 				if(rs.getInt("Broker_id")==src&&rs.getFloat("Investment")<amt)return;
 			}
 		}
-
 			con = Database.initialize().getConnection();
 			CallableStatement st = con.prepareCall("{call move_funds(?,?,?,?)}");
 			st.setString(1, (String) req.getSession().getAttribute("user"));

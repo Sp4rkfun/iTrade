@@ -1,7 +1,5 @@
 package iTrade;
 
-import iTrade.policy.Policy;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -77,26 +75,14 @@ public class Runtime extends Thread{
 	}
 	
 	public void runDailyPolicy(){
-		synchronized (daily) {
-			for(Policy p:daily){
-				p.runPolicy();
-			}
-		}
+
 	}
 
 	public void runWeeklyPolicy(){
-		synchronized (weekly) {
-			for(Policy p:weekly){
-				p.runPolicy();
-			}
-		}
+
 	}
 
 	public void runMonthlyPolicy(){
-		synchronized (monthly) {
-			for(Policy p:monthly){
-				p.runPolicy();
-			}
-		}
+
 	}
 }
