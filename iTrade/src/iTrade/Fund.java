@@ -4,7 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,12 +22,13 @@ public class Fund {
 	public String all() {
 		Connection con = null;
 		String result = "<div class=\"innerbubble\"><div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Name</div>"
-				+ "<div class=\"blimitt\">Share Price</div><div class=\"btimet\">Industry</div><div class=\"bgap\"></div></div><br/>";
+				+ "<div class=\"blimitt\">Share Price</div><div class=\"blimitt\">52wk. High</div>"
+				+ "<div class=\"blimitt\">52wk. Low</div><div class=\"blimitt\">7 day %</div><div class=\"btimet\">Industry</div><div class=\"bgap\"></div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st
-					.executeQuery("SELECT * FROM [Fund] WHERE Type != 'Broker'");
+			CallableStatement proc = con.prepareCall("{call display_funds}");
+			ResultSet rs = proc
+					.executeQuery();
 			int cnt = 1;
 			while (rs.next()) {
 				result += "<div class=\"blist\"><div class=\"bno\">"
@@ -36,6 +37,12 @@ public class Fund {
 						+ rs.getString("Ticker")
 						+ "</div><div class=\"blimit\">"
 						+ rs.getString("Share_Price")
+						+ "</div><div class=\"blimit\">"
+						+ rs.getString("52Hi")
+						+ "</div><div class=\"blimit\">"
+						+ rs.getString("52Low")
+						+ "</div><div class=\"blimit\">"
+						+ ((Float.parseFloat(rs.getString("Share_Price"))-Float.parseFloat(rs.getString("7open")))/Float.parseFloat(rs.getString("7open")))*100
 						+ "</div><div class=\"btime\">"
 						+ rs.getString("Type")
 						+ "</div>"
@@ -43,7 +50,7 @@ public class Fund {
 						+ rs.getString("Ticker") + "');\"></div></div><br/>";
 			}
 			rs.close();
-			st.close();
+			proc.close();
 			result += "</div>";
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -101,7 +108,8 @@ public class Fund {
 	@Path("/equity")
 	public String userEquity(@Context HttpServletRequest req) {
 		Connection con = null;
-		String result = "<div class=\"innerbubble\"><span class=\"fundsheader\">Shares</span>"
+		String result = "<div class=\"innerbubble\">";
+		result+="<div style=\"font-size:20pt;\">Free Capital: "+User.getBalance(req)+"</div></br><span class=\"fundsheader\">Shares</span>"
 				+ "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\" >Ticker</div><div class=\"blimitt\" >Shares Owned</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();

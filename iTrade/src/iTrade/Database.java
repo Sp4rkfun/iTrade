@@ -4,8 +4,8 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 public class Database {
-	private static String user="crowleaj";
-	private static String password="";
+	private static String user="333Winter2014Broker";
+	private static String password="root";
 	public static DataSource initialize(){
 		PoolProperties p = new PoolProperties();
 		p.setUrl("jdbc:sqlserver://titan.csse.rose-hulman.edu;databasename=itrade42");
@@ -20,7 +20,7 @@ public class Database {
 		p.setJmxEnabled(true);
 		p.setTestWhileIdle(false);
 		p.setTestOnBorrow(true);
-		p.setValidationQuery("SELECT 1");
+		p.setValidationQuery("{call validation_query}");
 		p.setTestOnReturn(false);
 		p.setValidationInterval(30000);
 		p.setTimeBetweenEvictionRunsMillis(30000);

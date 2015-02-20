@@ -41,7 +41,7 @@ public class Broker {
 						"</div><div class=\"btime\">"+rs.getInt("Trade_time")+"</div>"
 						+"<div class=\"btime\">"+rs.getInt("commission")+"</div><div class=\"btime\">"+
 						rs.getInt("initial_fee")+"</div>"+"<div class=\"btime\">"+rs.getInt("initial_deposit")+
-						"</div><div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"policies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"');\"></div></div><br/>";
+						"</div><div class=\"binput\"><input type=\"submit\" value=\"Select\" onClick=\"exclusivePolicies("+rs.getInt("Broker_id")+",'"+rs.getString("Name")+"','"+rs.getString("Investment")+"');\"></div></div><br/>";
 			}
 			rs.close();
 			st.close();
@@ -128,7 +128,7 @@ public class Broker {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("add/{id}/{amt}")
-	public String addBrokerToUser(@Context HttpServletRequest req, @PathParam("id") int id, @PathParam("amt") Float amount){
+	public String addBrokerToUser(@Context HttpServletRequest req, @PathParam("id") int id, @PathParam("amt") float amount){
 		Connection con = null;
 		String result="<div class=\"blistt\"><div class=\"bno\">No.</div><div class=\"bname\" >Name</div><div class=\"blimit\" >Limit</div><div class=\"btime\" >Trade Time</div></div><br/>";
 		try {

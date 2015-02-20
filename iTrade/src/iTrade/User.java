@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -93,18 +92,19 @@ public class User {
 
 	public static String getBalance(HttpServletRequest req) {
 		Connection con = null;
-		String result = "<div class=\"blist\"><div class=\"bno\">No.</div><div class=\"bname\" >Name</div><div class=\"blimit\" >Limit</div><div class=\"btime\" >Trade Time</div></div><br/>";
+		String result="";
 		try {
 			con = Database.initialize().getConnection();
-			Statement st = con.createStatement();
-			ResultSet rs = st
-					.executeQuery("SELECT * FROM [User] WHERE Username = '"
-							+ req.getSession().getAttribute("user") + "'");
+			CallableStatement proc = con
+					.prepareCall("{call get_capital(?)}");
+			proc.setString(1, (String) req.getSession().getAttribute("user"));
+			proc.executeQuery();
+			ResultSet rs = proc.getResultSet();
 			while (rs.next()) {
 				result = rs.getString("Capital");
 			}
 			rs.close();
-			st.close();
+			proc.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -115,6 +115,44 @@ public class User {
 				}
 		}
 		return result;
+	}
+		
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	@Path("/transfer/{src}/{dst}/{amt}")
+	public void transferFunds(@Context HttpServletRequest req, @PathParam("src")int src, 
+			@PathParam("dst") int dst, @PathParam("amt") float amt){
+		if(amt<=0)return;
+		if(amt>Float.parseFloat(User.getBalance(req))&&src==-1)return;
+		Connection con = null;
+		try {
+		if(src!=-1){
+			con = Database.initialize().getConnection();
+			CallableStatement st = con.prepareCall("{call User_Brokers_view(?)}");
+			st.setString(1, (String) req.getSession().getAttribute("user"));
+			ResultSet rs = st.executeQuery();
+			while(rs.next()){
+				if(rs.getInt("Broker_id")==src&&rs.getFloat("Investment")<amt)return;
+			}
+		}
+
+			con = Database.initialize().getConnection();
+			CallableStatement st = con.prepareCall("{call move_funds(?,?,?,?)}");
+			st.setString(1, (String) req.getSession().getAttribute("user"));
+			st.setInt(2, src);
+			st.setInt(3, dst);
+			st.setFloat(4, amt);
+			st.executeUpdate();
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null)
+				try {
+					con.close();
+				} catch (Exception ignore) {
+				}
+		}
 	}
 
 	public static String signUp() {

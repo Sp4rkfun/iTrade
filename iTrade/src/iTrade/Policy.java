@@ -127,7 +127,7 @@ public class Policy {
 	@Path("/all/exclusive/{broker}")
 	public String allOnlyByBroker(@Context HttpServletRequest req, @PathParam("broker")String broker){
 		Connection con = null;
-		String result="<div class=\"innerbubble\"><div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Type</div><div class=\"blimitt\">Frequency</div>"
+		String result="<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\">Type</div><div class=\"blimitt\">Frequency</div>"
 				+ "<div class=\"btimet\">Condition</div><div class=\"bactiont\">Actions</div></div><br/>";
 		try {
 			con = Database.initialize().getConnection();
@@ -155,7 +155,6 @@ public class Policy {
 			}
 			rs.close();
 			st.close();
-			result+="</div>";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
