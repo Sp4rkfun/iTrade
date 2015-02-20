@@ -8,7 +8,7 @@ public class Startup extends HttpServlet{
 @Override
 public void init() throws ServletException {
 	System.out.println("Starting...");
-	//new Runtime().start();
+	new Runtime().start();
 	super.init();
 }
 }
