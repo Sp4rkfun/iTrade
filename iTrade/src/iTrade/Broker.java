@@ -153,6 +153,31 @@ public class Broker {
 	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
+	@Path("close/{id}")
+	public String closeAcct(@Context HttpServletRequest req, @PathParam("id") int id){
+		Connection con = null;
+		String result="<div class=\"blistt\"><div class=\"bno\">No.</div><div class=\"bname\" >Name</div><div class=\"blimit\" >Limit</div><div class=\"btime\" >Trade Time</div></div><br/>";
+		try {
+			con = Database.initialize().getConnection();
+			CallableStatement st = con.prepareCall("{call close_acct(?,?)}");
+			st.setString(1, (String) req.getSession().getAttribute("user"));
+			st.setInt(2, id);
+			st.executeUpdate();
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null)
+				try {
+					con.close();
+				} catch (Exception ignore) {
+				}
+		}
+		return result;
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)
 	@Path("{name}/{limit}/{tradeTime}")
 	public int addBroker(@PathParam("name") String name,@PathParam("limit") String limit,
 			@PathParam("tradeTime") String tradeTime){

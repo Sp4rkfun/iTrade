@@ -49,16 +49,21 @@ function policies(id, name) {
 	$("#label1").text("Type");
 	$("#label2").text("Frequency");
 	$("#label3").text("Condition");
-	document.getElementById("brokers").innerHTML = "<div id=\"brokername\">"
-			+ brokerName
-			+ "</br><input type=\"submit\" style=\"width:100px;\"value=\"Back\" onClick=\"brokers();\"></div></br>"
-			+ "<div style=\"text-align: center;\"><div class=\"title\" id=\"curbal\"></div><input type=\"text\" id=\"amt\">"
-			+ "<input type=\"submit\" value=\"Create Account\" style=\"width:120px;\" id=\"sbalance\" onclick=\"addBroker();\"></div>";
 	var query = "rest/policy/all/exclusive/" + id;
-	$("#curbal").text("Free Capital: " + $("#balance").text());
+
 	ajax(query, function(html) {
 		var status = document.getElementById("brokers");
-		status.innerHTML += html;
+		if ($("#balance").text() != "") {
+			status.innerHTML = "<div class=\"innerbubble\"><div id=\"brokername\">"
+			+ brokerName
+			+ "</br><input type=\"submit\" style=\"width:100px;\"value=\"Back\" onClick=\"brokers();\"></div></br><div style=\"text-align: center;\"><div class=\"title\" id=\"curbal\"></div>"
+					+ "<input type=\"text\" id=\"amt\"><input type=\"submit\" value=\"Create Account\" style=\"width:120px;\" id=\"sbalance\" onclick=\"addBroker();\"></div>"+html+"</div>";
+			$("#curbal").text("Free Capital: " + $("#balance").text());
+		}
+		else
+		status.innerHTML = "<div class=\"innerbubble\"><div id=\"brokername\">"
+			+ brokerName
+			+ "</br><input type=\"submit\" style=\"width:100px;\"value=\"Back\" onClick=\"brokers();\"></div></br>"+html+"</div>";
 	});
 }
 
@@ -93,7 +98,7 @@ function exclusivePolicies(id, name, balance) {
 				var status = document.getElementById("brokers");
 				status.innerHTML += "<div class=\"innerbubble\" style=\"height:62%;\">"
 						+ html
-						+ "</br><input type=\"submit\" value=\"Close Account\" style=\"width:120px;\" onclick=\"addBroker();\"></div>";
+						+ "</br><input type=\"submit\" value=\"Close Account\" style=\"width:120px;\" onclick=\"closeAcct();\"></div>";
 			});
 }
 
@@ -137,6 +142,13 @@ function submitOffer() {
 
 function addBroker() {
 	var query = "rest/broker/add/" + brokerId + "/" + $("#amt").val();
+	ajax(query, function(html) {
+		location.reload();
+	});
+}
+
+function closeAcct() {
+	var query = "rest/broker/close/" + brokerId;
 	ajax(query, function(html) {
 		location.reload();
 	});

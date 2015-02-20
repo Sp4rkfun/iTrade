@@ -67,8 +67,9 @@ public class Fund {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/reqoffer/{name}")
-	public String transact(@PathParam("name") String name) {
+	public String transact(@Context HttpServletRequest req, @PathParam("name") String name) {
 		Connection con = null;
+		if(req.getSession().getAttribute("user")==null)return User.signUp();
 		String result = "<div class=\"innerbubble\">";
 		try {
 			con = Database.initialize().getConnection();
@@ -108,6 +109,7 @@ public class Fund {
 	@Path("/equity")
 	public String userEquity(@Context HttpServletRequest req) {
 		Connection con = null;
+		if(req.getSession().getAttribute("user")==null)return User.signUp();
 		String result = "<div class=\"innerbubble\">";
 		result+="<div style=\"font-size:20pt;\">Free Capital: "+User.getBalance(req)+"</div></br><span class=\"fundsheader\">Shares</span>"
 				+ "<div class=\"blistt\"><div class=\"bnot\">No.</div><div class=\"bnamet\" >Ticker</div><div class=\"blimitt\" >Shares Owned</div></div><br/>";
